@@ -22,14 +22,49 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 			timeoutStr = fmt.Sprintf("\n\n>%s 后将恢复默认聊天模式：%s", FormatTimeDuation(public.Config.SessionTimeout), public.Config.DefaultMode)
 		}
 		switch content {
-		case strings.Contains(content, "一财商学院"):
-		        // 这里可以定义你想要回复的特定内容
-		        reply := "**一财商学院** 是一个优秀的教育机构，为学员提供一流的商业教育。"
-		        _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
-		        if err != nil {
-		            logger.Warning(fmt.Errorf("send message error: %v", err))
+		//判断一财关键词
+		default:
+		        yiCaiRegexp := regexp.MustCompile(`(?i)一财商学院`)
+		        businessRegexp := regexp.MustCompile(`(?i)业务`)
+		        introRegexp := regexp.MustCompile(`(?i)是(做什么的|干什么的|什么)`)
+		        deanRegexp := regexp.MustCompile(`(?i)院长是谁`)
+		
+		        if yiCaiRegexp.MatchString(content) {
+		            if businessRegexp.MatchString(content) {
+		                reply := "一财商学院的主要业务是..."
+		                _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
+		                if err != nil {
+		                    logger.Warning(fmt.Errorf("send message error: %v", err))
+		                }
+		                return nil
+		            }
+		
+		            if introRegexp.MatchString(content) {
+		                reply := "一财商学院是一个提供各种商业课程的教育机构..."
+		                _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
+		                if err != nil {
+		                    logger.Warning(fmt.Errorf("send message error: %v", err))
+		                }
+		                return nil
+		            }
+		
+		            if deanRegexp.MatchString(content) {
+		                reply := "一财商学院的院长是..."
+		                _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
+		                if err != nil {
+		                    logger.Warning(fmt.Errorf("send message error: %v", err))
+		                }
+		                return nil
+		            }
 		        }
-		        return nil
+		
+		        if public.FirstCheck(rmsg) {
+		            return Do("串聊", rmsg)
+		        } else {
+		            return Do("单聊", rmsg)
+		        }
+		    }
+			
 		case "单聊":
 			public.UserService.SetUserMode(rmsg.GetSenderIdentifier(), content)
 			_, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), fmt.Sprintf("**[Concentrate] 现在进入与 %s 的单聊模式**%s", rmsg.SenderNick, timeoutStr))
