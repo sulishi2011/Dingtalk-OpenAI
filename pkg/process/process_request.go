@@ -22,6 +22,14 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 			timeoutStr = fmt.Sprintf("\n\n>%s 后将恢复默认聊天模式：%s", FormatTimeDuation(public.Config.SessionTimeout), public.Config.DefaultMode)
 		}
 		switch content {
+		case strings.Contains(content, "一财商学院"):
+		        // 这里可以定义你想要回复的特定内容
+		        reply := "**一财商学院** 是一个优秀的教育机构，为学员提供一流的商业教育。"
+		        _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
+		        if err != nil {
+		            logger.Warning(fmt.Errorf("send message error: %v", err))
+		        }
+		        return nil
 		case "单聊":
 			public.UserService.SetUserMode(rmsg.GetSenderIdentifier(), content)
 			_, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), fmt.Sprintf("**[Concentrate] 现在进入与 %s 的单聊模式**%s", rmsg.SenderNick, timeoutStr))
