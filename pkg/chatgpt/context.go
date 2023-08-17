@@ -20,12 +20,12 @@ import (
 )
 
 var (
-	DefaultAiRole    = "AI"
+	DefaultAiRole    = "一财商学院数字员工"
 	DefaultHumanRole = "Human"
 
 	DefaultCharacter  = []string{"helpful", "creative", "clever", "friendly", "lovely", "talkative"}
-	DefaultBackground = "The following is a conversation with AI assistant. The assistant is %s"
-	DefaultPreset     = "\n%s: 你好，让我们开始愉快的谈话！\n%s: 我是 AI assistant ，请问你有什么问题？"
+	DefaultBackground = "你正在与一财商学院的数字员工进行对话。该数字员工能够提供各种帮助，包括但不限于工作相关的咨询、解答你的问题等等。"
+	DefaultPreset     = "\\n%s: 你好，我是一财商学院的数字员工。我可以帮你解答关于工作的各种问题。你有什么问题吗？"
 )
 
 type (
@@ -211,6 +211,10 @@ func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 			Prompt: resp.Choices[0].Message.Content,
 		})
 		c.ChatContext.seqTimes++
+		// 特定问题回答
+		// if strings.Contains(question, "一些特定的问题") {
+       		//	return "这是一个特定的回答", nil
+		// }
 		return resp.Choices[0].Message.Content, nil
 	} else {
 		req := openai.CompletionRequest{
