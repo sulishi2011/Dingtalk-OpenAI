@@ -25,22 +25,12 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 		//判断一财关键词
 		default:
 		        yiCaiRegexp := regexp.MustCompile(`(?i)一财商学院`)
-		        businessRegexp := regexp.MustCompile(`(?i)业务`)
-		        introRegexp := regexp.MustCompile(`(?i)是(做什么的|干什么的|什么)`)
-		        deanRegexp := regexp.MustCompile(`(?i)院长是谁`)
+		        introRegexp := regexp.MustCompile(`(?i)(业务|做什么的|干什么的|什么)`)
+		        deanRegexp := regexp.MustCompile(`(?i)(院长|谁创办)`)
 		
 		        if yiCaiRegexp.MatchString(content) {
-		            if businessRegexp.MatchString(content) {
-		                reply := "一财商学院的主要业务是..."
-		                _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
-		                if err != nil {
-		                    logger.Warning(fmt.Errorf("send message error: %v", err))
-		                }
-		                return nil
-		            }
-		
 		            if introRegexp.MatchString(content) {
-		                reply := "一财商学院是一个提供各种商业课程的教育机构..."
+		                reply := "一财商学院由上海文广集团(SMG)旗下第一财经投资设立，是家以企业客户为中心的全域数字商学院。围绕企业的数字化升级，提供覆盖其全平台经营、全链路运营、全生命周期全组织学习的4F知识服务。通过建设“产业互联网和消费互联网融合”、“企业战略规划及组织升级”两大研究中心，展开数据策略、培训咨询、运营陪跑等业务推动企业与数字平台的共振和成长。"
 		                _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
 		                if err != nil {
 		                    logger.Warning(fmt.Errorf("send message error: %v", err))
@@ -49,7 +39,7 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 		            }
 		
 		            if deanRegexp.MatchString(content) {
-		                reply := "一财商学院的院长是..."
+		                reply := "一财商学院的院长是黄磊~"
 		                _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
 		                if err != nil {
 		                    logger.Warning(fmt.Errorf("send message error: %v", err))
