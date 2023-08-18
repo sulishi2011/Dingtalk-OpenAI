@@ -13,50 +13,54 @@ import (
 	"github.com/solywsh/chatgpt"
 )
 
+func processYiCai(rmsg *dingbot.ReceiveMsg, content string) (bool, error) {
+    yiCaiRegexp := regexp.MustCompile(`(?i)一财商学院`)
+    introRegexp := regexp.MustCompile(`(?i)(业务|做什么的|干什么的|什么)`)
+    deanRegexp := regexp.MustCompile(`(?i)(院长|谁创办)`)
+
+    if yiCaiRegexp.MatchString(content) {
+        if introRegexp.MatchString(content) {
+            reply := "一财商学院由上海文广集团(SMG)旗下第一财经投资设立，是家以企业客户为中心的全域数字商学院。围绕企业的数字化升级，提供覆盖其全平台经营、全链路运营、全生命周期全组织学习的4F知识服务。通过建设“产业互联网和消费互联网融合”、“企业战略规划及组织升级”两大研究中心，展开数据策略、培训咨询、运营陪跑等业务推动企业与数字平台的共振和成长。"
+            _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
+            if err != nil {
+                logger.Warning(fmt.Errorf("send message error: %v", err))
+            }
+            return true, nil
+        }
+
+        if deanRegexp.MatchString(content) {
+            reply := "一财商学院的院长是黄磊~"
+            _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
+            if err != nil {
+                logger.Warning(fmt.Errorf("send message error: %v", err))
+            }
+            return true, nil
+        }
+    }
+
+    return false, nil
+}
+
+
 // ProcessRequest 分析处理请求逻辑
-func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
-	    // ... 原有代码 ...
-	
+func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {	
 	    content := strings.TrimSpace(rmsg.Text.Content)
 	    timeoutStr := ""
 	    if content != public.Config.DefaultMode {
 	        timeoutStr = fmt.Sprintf("\n\n>%s 后将恢复默认聊天模式：%s", FormatTimeDuation(public.Config.SessionTimeout), public.Config.DefaultMode)
 	    }
+
+	    yiCaiProcessed, err := processYiCai(rmsg, content)
+	    if err != nil {
+	        return err
+	    }
+
+	    if yiCaiProcessed {
+	        return nil
+	    }
+	
 	    switch content {
-	        // ... 原有代码 ...
-	
-	        default:
-	            yiCaiRegexp := regexp.MustCompile(`(?i)一财商学院`)
-	            introRegexp := regexp.MustCompile(`(?i)(业务|做什么的|干什么的|什么)`)
-	            deanRegexp := regexp.MustCompile(`(?i)(院长|谁创办)`)
-	
-	            if yiCaiRegexp.MatchString(content) {
-	                if introRegexp.MatchString(content) {
-	                    reply := "一财商学院由上海文广集团(SMG)旗下第一财经投资设立，是家以企业客户为中心的全域数字商学院。围绕企业的数字化升级，提供覆盖其全平台经营、全链路运营、全生命周期全组织学习的4F知识服务。通过建设“产业互联网和消费互联网融合”、“企业战略规划及组织升级”两大研究中心，展开数据策略、培训咨询、运营陪跑等业务推动企业与数字平台的共振和成长。"
-	                    _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
-	                    if err != nil {
-	                        logger.Warning(fmt.Errorf("send message error: %v", err))
-	                    }
-	                    return nil
-	                }
-	
-	                if deanRegexp.MatchString(content) {
-	                    reply := "一财商学院的院长是黄磊~"
-	                    _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), reply)
-	                    if err != nil {
-	                        logger.Warning(fmt.Errorf("send message error: %v", err))
-	                    }
-	                    return nil
-	                }
-	            }
-	
-	            if public.FirstCheck(rmsg) {
-	                return Do("串聊", rmsg)
-	            } else {
-	                return Do("单聊", rmsg)
-	            }
-	        }
-	
+	        // ... 原有代码 ...	
 	        case "单聊":
 	            public.UserService.SetUserMode(rmsg.GetSenderIdentifier(), content)
 	            _, err := rmsg.ReplyToDingtalk(string(dingbot.MARKDOWN), fmt.Sprintf("**[Concentrate] 现在进入与 %s 的单聊模式**%s", rmsg.SenderNick, timeoutStr))
