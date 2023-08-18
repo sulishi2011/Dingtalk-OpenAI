@@ -27,7 +27,7 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 		        yiCaiRegexp := regexp.MustCompile(`(?i)一财商学院`)
 		        introRegexp := regexp.MustCompile(`(?i)(业务|做什么的|干什么的|什么)`)
 		        deanRegexp := regexp.MustCompile(`(?i)(院长|谁创办)`)
-		
+		        
 		        if yiCaiRegexp.MatchString(content) {
 		            if introRegexp.MatchString(content) {
 		                reply := "一财商学院由上海文广集团(SMG)旗下第一财经投资设立，是家以企业客户为中心的全域数字商学院。围绕企业的数字化升级，提供覆盖其全平台经营、全链路运营、全生命周期全组织学习的4F知识服务。通过建设“产业互联网和消费互联网融合”、“企业战略规划及组织升级”两大研究中心，展开数据策略、培训咨询、运营陪跑等业务推动企业与数字平台的共振和成长。"
