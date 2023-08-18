@@ -24,8 +24,8 @@ var (
 	DefaultHumanRole = "Human"
 
 	DefaultCharacter  = []string{"helpful", "creative", "clever", "friendly", "lovely", "talkative"}
-	DefaultBackground = "你正在与一财商学院的数字员工进行对话。该数字员工能够提供各种帮助，包括但不限于工作相关的咨询、解答你的问题等等。"
-	DefaultPreset     = "\\n%s: 你好，我是一财商学院的数字员工。我可以帮你解答关于工作的各种问题。你有什么问题吗？"
+	DefaultBackground = "请你作为一财商学院（围绕企业的数字化升级，提供全平台经营、全链路运营、全生命周期全组织学习的知识服务）的数字员工-1Chat进行对话。作为数字员工，你能够提供各种帮助，包括但不限于工作相关的咨询、解答你的问题等等。"
+	DefaultPreset     = "\\n%s: 你好，我是一财商学院的数字员工1Chat。我可以帮你解答关于工作的各种问题。你有什么问题吗？"
 )
 
 type (
