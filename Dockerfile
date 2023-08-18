@@ -1,6 +1,6 @@
 FROM golang:1.18.10-alpine3.16 AS builder
 
-# ENV GOPROXY      https://goproxy.io
+ENV GOPROXY      https://goproxy.io
 
 RUN mkdir /app
 ADD . /app/
@@ -14,7 +14,7 @@ ARG TZ="Asia/Shanghai"
 ENV TZ ${TZ}
 
 RUN mkdir /app && apk upgrade \
-    && apk add bash tzdata \
+    && apk add bash tzdata nano\
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
 
