@@ -86,7 +86,7 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 			if err != nil {
 				logger.Warning(fmt.Errorf("send message error: %v", err))
 			}
-		case "模板":
+		case "模板","模版":
 			var title string
 			for _, v := range *public.Prompt {
 				title = title + v.Title + " | "
