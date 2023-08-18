@@ -138,7 +138,6 @@ func ProcessRequest(rmsg *dingbot.ReceiveMsg) error {
 				return Do("单聊", rmsg)
 			}
 		}
-	}
 	return nil
 }
 
